@@ -10,10 +10,12 @@ import {
   Table,
   Tag,
 } from 'antd';
+import { observer } from 'mobx-react';
 import React, { useEffect, useState } from 'react';
 
-import SvgIcon from '../components/SvgIcon';
-import useStore from '../store';
+import { useSelectors } from '@/_store';
+import SvgIcon from '@/components/SvgIcon';
+import useStore from '@/store';
 
 const { Option } = Select;
 
@@ -24,6 +26,7 @@ const Home: React.FC = () => {
   const { getList, removeList, editList, addList, setEditItem } = useStore.getState();
 
   const [visible, setVisible] = useState<boolean>(false);
+  const { datex } = useSelectors('datex');
 
   useEffect(() => {
     getList();
@@ -100,10 +103,15 @@ const Home: React.FC = () => {
       editItem ? editList(res) : addList(res);
     });
   };
-  console.log('list', list);
+
   return (
     <div>
-      <h2>Home</h2>
+      <h2>
+        Home {datex?.timeString}
+        <Button type="link" size="small" onClick={() => datex?.updateTimeStamp()}>
+          update
+        </Button>
+      </h2>
       <SvgIcon name="布丁" />
       <Space>
         <Button type="primary" onClick={() => setVisible(true)}>
@@ -148,4 +156,4 @@ const Home: React.FC = () => {
     </div>
   );
 };
-export default Home;
+export default observer(Home);

@@ -109,6 +109,10 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
       alias: [
         { find: /^~/, replacement: path.resolve(__dirname, './') },
         { find: '@', replacement: path.resolve(__dirname, 'src') },
+        {
+          find: 'components',
+          replacement: path.resolve(__dirname, 'src/components'),
+        },
       ],
       extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json'], // 默认
     },

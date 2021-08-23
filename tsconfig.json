@@ -9,6 +9,7 @@
     "skipLibCheck": false,
     "esModuleInterop": false,
     "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
@@ -17,7 +18,8 @@
     "jsx": "react",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/"]
+      "@/*": ["src/*"],
+      "components/*": ["src/components/*"]
     }
   },
   "include": [

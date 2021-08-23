@@ -9,7 +9,7 @@ import { layoutRouteList } from './routes/utils';
 
 const App = () => {
   return (
-    <Suspense fallback={<Spin size="large" className="layout__loading" />}>
+    <Suspense fallback={<Spin size="large" delay={500} className="layout__loading" />}>
       <Router>
         <Switch>
           {/* 根路径重定向 */}
