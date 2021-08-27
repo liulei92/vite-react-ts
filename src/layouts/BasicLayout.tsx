@@ -1,17 +1,25 @@
 import { Button, Layout, Menu, Spin } from 'antd';
+import { observer } from 'mobx-react';
 import React from 'react';
-import { Link, Redirect, Route, Switch } from 'react-router-dom';
+import { Link, Redirect, Route, Switch, useHistory } from 'react-router-dom';
 
-import MyHeader from '../components/Header';
-import { layoutRouteList } from '../routes/utils';
-import useStore from '../store';
+import MyHeader from '@/components/Header';
+import { layoutRouteList } from '@/routes/utils';
+import { useSelectors } from '@/store';
 
 const { Header, Sider, Content } = Layout;
 
 const BasicLayout: React.FC = (props) => {
-  const loading = useStore((state) => state.loading);
-
+  const history = useHistory();
+  console.log(history);
+  const { user: USER, app: APP } = useSelectors('user', 'app');
   const { children = [], redirect } = layoutRouteList[1];
+
+  if (!USER?.user) {
+    history.push('/user/login?pathname=' + history.location.pathname);
+    return null;
+  }
+
   return (
     <Layout>
       <Sider>
@@ -32,7 +40,8 @@ const BasicLayout: React.FC = (props) => {
         </Header>
 
         <Content style={{ height: 'calc(100vh - 60px)' }}>
-          <Spin spinning={loading}>
+          {/* loading */}
+          <Spin spinning={false}>
             <Switch>
               {/* 重定向 写法1 严格模式下的path  */}
               {/* <Route
@@ -56,4 +65,4 @@ const BasicLayout: React.FC = (props) => {
   );
 };
 
-export default BasicLayout;
+export default observer(BasicLayout);

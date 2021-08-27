@@ -3,7 +3,10 @@
  * @Date: 2021-08-23 09:46:07
  * @Author: LeiLiu
  */
-import type { StoreTypes } from '../_store';
+import { RadioChangeEvent } from 'antd/es/radio/interface.d';
+
+import type { StoreTypes } from '@/store';
+import type { HttpType } from '@/utils/axios';
 /**
  * 一些基本的全局类型声明
  */
@@ -22,5 +25,8 @@ declare module '*.svg';
 declare global {
   interface Window {
     __STORE__: StoreTypes;
+    __HTTP__: HttpType;
   }
+
+  type AnRadioChangeEvent<T = {}> = RadioChangeEvent & T;
 }

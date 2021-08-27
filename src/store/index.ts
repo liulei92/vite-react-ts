@@ -1,83 +1,54 @@
-/* eslint-disable no-unused-vars */
-import create from 'zustand';
+/*
+ * @Description: mobx-store
+ * @Date: 2021-08-23 09:32:43
+ * @Author: LeiLiu
+ */
+import React, { createContext, useContext } from 'react';
 
-// import { persist } from 'zustand/middleware';
-import { sleep } from './request';
+import app from './modules/store.app';
+import datex from './modules/store.datex';
+import timer from './modules/store.timer';
+import user from './modules/store.user';
 
-let dataSource = [
-  {
-    key: '1',
-    name: 'John Brown',
-    age: 32,
-    address: 'New York No. 1 Lake Park',
-    tags: ['nice', 'developer'],
-  },
-  {
-    key: '2',
-    name: 'Jim Green',
-    age: 42,
-    address: 'London No. 1 Lake Park',
-    tags: ['loser'],
-  },
-  {
-    key: '3',
-    name: 'Joe Black',
-    age: 32,
-    address: 'Sidney No. 1 Lake Park',
-    tags: ['cool', 'teacher'],
-  },
-];
-
-type State = {
-  user: string;
-  count: number;
-  list: any[];
-  loading: boolean;
-  editItem: any;
-  setUser: (val: string) => void;
-  setLoading: (val: boolean) => void;
-  getList: () => void;
-  removeList: (id: string) => void;
-  editList: (params: any) => void;
-  addList: (params: any) => void;
-  setEditItem: (params: any) => void;
-
-  addAFish: () => void;
-  reduceAFish: () => void;
+const store = {
+  timer,
+  datex,
+  user,
+  app,
 };
 
-const useStore = create<State>((set, get) => ({
-  user: 'xiaoming',
-  count: 0,
-  list: [],
-  loading: false,
-  editItem: undefined,
-  setUser: (val) => set({ user: val }),
-  setLoading: (val) => set({ loading: val }),
-  addAFish: () => set({ count: get().count + 1 }),
-  reduceAFish: () => set({ count: get().count - 1 }),
-  setEditItem: (params: any) => set({ editItem: params }),
-  getList: async () => {
-    await sleep(1000);
-    console.log(dataSource);
-    set({ list: dataSource });
-  },
-  removeList: async (val) => {
-    dataSource = dataSource.filter((n) => n.key !== val);
-    get().getList();
-  },
-  editList: async (params: any) => {
-    dataSource = dataSource.map((n) => {
-      if (n.key === params.key) {
-        return { ...n, ...params };
-      }
-      return n;
-    });
-    get().getList();
-  },
-  addList: async (params: any) => {
-    dataSource = [{ ...params, key: `${dataSource.length + 1}` }, ...dataSource];
-    get().getList();
-  },
-}));
-export default useStore;
+window.__STORE__ = store;
+
+export type StoreTypes = typeof store;
+
+export const StoreContext = createContext<StoreTypes>(store);
+
+// useMobxStore
+export const useStore = () => {
+  const store = useContext(StoreContext);
+  return store;
+};
+
+/**
+ * hook: useSelectors 根据多个个 store 名称，返回values
+ * @param {string[]} paths
+ * @returns {keyof StoreMapper}
+ */
+export function useSelectors<T extends keyof StoreTypes>(...paths: T[]) {
+  return paths.reduce((s: Partial<StoreTypes>, c) => {
+    s[c] = store[c];
+    return s;
+  }, {});
+}
+
+// const files: Record<string, any> = import.meta.globEager('./module/*.ts');
+// const store = Object.keys(files).reduce((t, c) => {
+//   t[c] = files[c]?.default;
+//   return t;
+// }, {});
+
+/*****匹配根目录文件将通过globEager动态全局导入注册组件--Start*****/
+// const modules = import.meta.globEager('./components/*/*.vue')
+// for (const path in modules) {
+//   app.component(modules[path].default.name,modules[path].default)
+// }

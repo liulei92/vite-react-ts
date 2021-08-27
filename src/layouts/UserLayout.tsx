@@ -5,6 +5,7 @@ import { layoutRouteList } from '../routes/utils';
 
 const UserLayout: React.FC = (props) => {
   const { children = [], redirect } = layoutRouteList[0];
+
   return (
     <Switch>
       {/* 重定向 */}

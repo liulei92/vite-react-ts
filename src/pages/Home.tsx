@@ -13,23 +13,20 @@ import {
 import { observer } from 'mobx-react';
 import React, { useEffect, useState } from 'react';
 
-import { useSelectors } from '@/_store';
 import SvgIcon from '@/components/SvgIcon';
-import useStore from '@/store';
+import { useSelectors } from '@/store';
 
 const { Option } = Select;
 
 const Home: React.FC = () => {
   const [form] = Form.useForm();
-  const list = useStore((state) => state.list); // list 该写法可检测到 state 变化
-  const editItem = useStore((state) => state.editItem);
-  const { getList, removeList, editList, addList, setEditItem } = useStore.getState();
+  const list: any[] = [];
 
   const [visible, setVisible] = useState<boolean>(false);
   const { datex } = useSelectors('datex');
 
   useEffect(() => {
-    getList();
+    console.log('useEffect');
   }, []);
 
   const columns = [
@@ -78,13 +75,12 @@ const Home: React.FC = () => {
           <Button
             type="primary"
             onClick={() => {
-              setEditItem(record);
               setVisible(true);
               form.setFieldsValue(record);
             }}>
             修改
           </Button>
-          <Button danger onClick={() => removeList(record.key)}>
+          <Button danger onClick={() => {}}>
             删除
           </Button>
         </Space>
@@ -100,7 +96,6 @@ const Home: React.FC = () => {
     handleCancle();
     form.validateFields().then((res) => {
       console.log(res);
-      editItem ? editList(res) : addList(res);
     });
   };
 
@@ -117,19 +112,18 @@ const Home: React.FC = () => {
         <Button type="primary" onClick={() => setVisible(true)}>
           新增
         </Button>
-        <Button onClick={() => getList()}>refresh</Button>
+        <Button onClick={() => {}}>refresh</Button>
       </Space>
       <Card>
         <Table dataSource={list} columns={columns} />
       </Card>
       <Modal
-        title={editItem ? '修改信息' : '新增信息'}
+        title="123"
         visible={visible}
         onOk={hanldeOk}
         onCancel={handleCancle}
         afterClose={() => {
           form.resetFields();
-          setEditItem(undefined);
         }}>
         <Form form={form}>
           <Form.Item required label="姓名" name="name">

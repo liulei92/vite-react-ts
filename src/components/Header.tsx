@@ -1,16 +1,17 @@
 import { Space } from 'antd';
 import React from 'react';
 
-import useStore from '../store';
+import { useSelectors } from '@/store';
 
 const Header: React.FC = () => {
-  const user = useStore((state) => state.user);
+  const { user: USER } = useSelectors('user');
 
   return (
     <Space style={{ color: 'white' }}>
       <strong>Header</strong>
       <span>
-        user：<em>{user}</em>
+        {/* user */}
+        user：<em>{USER?.user}</em>
       </span>
     </Space>
   );
