@@ -23,6 +23,12 @@ export interface IRouteBase {
   meta: IRouteMeta;
   // 是否校验权限, false 为不校验, 不存在该属性或者为true 为校验, 子路由会继承父路由的 auth 属性
   auth?: boolean;
+  // 菜单栏中隐藏
+  hidden?: boolean;
+  // 隐藏的角色
+  denyRole?: string[];
+  // 隐藏的型号
+  denyModel?: string[];
 }
 
 export interface IRoute extends IRouteBase {

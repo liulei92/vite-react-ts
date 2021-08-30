@@ -30,15 +30,21 @@ export const $fm = (id: string, values?: Record<string, any>) => {
   return <FormattedMessage id={id} values={values}></FormattedMessage>;
 };
 
+const getPopupContainer = (trigger: HTMLElement) => {
+  if (trigger && (trigger.parentElement as HTMLElement)) {
+    return trigger.parentElement as HTMLElement;
+  } else {
+    return document.body;
+  }
+};
+
 const Intl: React.FC = observer(({ children }) => {
   const { app } = useSelectors('app');
   const { locale = 'en' } = app || {};
   const { customLocale, antLocale } = localeMapper[locale];
   return (
     <IntlProvider locale={locale} messages={customLocale}>
-      <ConfigProvider
-        locale={antLocale}
-        getPopupContainer={(trigger) => trigger.parentElement as HTMLElement}>
+      <ConfigProvider locale={antLocale} getPopupContainer={getPopupContainer}>
         {children}
       </ConfigProvider>
     </IntlProvider>

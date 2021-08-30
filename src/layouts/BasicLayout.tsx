@@ -1,5 +1,18 @@
-import { Button, Layout, Menu, Spin } from 'antd';
+import './basicLayout.less';
+
+import {
+  DesktopOutlined,
+  FileOutlined,
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
+  PieChartOutlined,
+  TeamOutlined,
+  UserOutlined,
+} from '@ant-design/icons';
+import { useSetState } from 'ahooks';
+import { Layout, Menu, Spin } from 'antd';
 import { observer } from 'mobx-react';
+import { relative } from 'path';
 import React from 'react';
 import { Link, Redirect, Route, Switch, useHistory } from 'react-router-dom';
 
@@ -7,13 +20,18 @@ import MyHeader from '@/components/Header';
 import { layoutRouteList } from '@/routes/utils';
 import { useSelectors } from '@/store';
 
-const { Header, Sider, Content } = Layout;
+const { Header, Content, Sider } = Layout;
+const { SubMenu } = Menu;
 
 const BasicLayout: React.FC = (props) => {
   const history = useHistory();
-  console.log(history);
   const { user: USER, app: APP } = useSelectors('user', 'app');
   const { children = [], redirect } = layoutRouteList[1];
+  const [state, setState] = useSetState({ collapsed: false });
+
+  const onCollapse = () => {
+    setState({ collapsed: !state.collapsed });
+  };
 
   if (!USER?.user) {
     history.push('/user/login?pathname=' + history.location.pathname);
@@ -21,21 +39,39 @@ const BasicLayout: React.FC = (props) => {
   }
 
   return (
-    <Layout>
-      <Sider>
-        <Button size="large" style={{ width: '100%' }}>
-          Vite React TypeScript
-        </Button>
-        <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
+    <Layout className="basic-layout" style={{ minHeight: '100vh' }}>
+      <Sider trigger={null} collapsible collapsed={state.collapsed}>
+        <div className="basic-layout__logo" />
+        <Menu theme="dark" mode="inline" defaultSelectedKeys={[children[0]?.path]}>
           {children.map((item) => (
-            <Menu.Item key={item.path}>
+            <Menu.Item key={item.path} icon={<PieChartOutlined />}>
               <Link to={item.path}>{item.meta.title}</Link>
             </Menu.Item>
           ))}
+          <Menu.Item key="2" icon={<DesktopOutlined />}>
+            Option 2
+          </Menu.Item>
+          <SubMenu key="sub1" icon={<UserOutlined />} title="User">
+            <Menu.Item key="3">Tom</Menu.Item>
+            <Menu.Item key="4">Bill</Menu.Item>
+            <Menu.Item key="5">Alex</Menu.Item>
+          </SubMenu>
+          <SubMenu key="sub2" icon={<TeamOutlined />} title="Team">
+            <Menu.Item key="6">Team 1</Menu.Item>
+            <Menu.Item key="8">Team 2</Menu.Item>
+          </SubMenu>
+          <Menu.Item key="9" icon={<FileOutlined />}>
+            Files
+          </Menu.Item>
         </Menu>
       </Sider>
       <Layout>
-        <Header style={{ height: 60 }}>
+        <Header style={{ height: 60, position: 'relative' }}>
+          {React.createElement(state.collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
+            className: 'trigger',
+            onClick: onCollapse,
+          })}
+
           <MyHeader />
         </Header>
 
